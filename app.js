@@ -1,9 +1,8 @@
-// Interfaz del portfolio: buscador de filmografía y vídeo bajo demanda.
+// Interfaz del portfolio: buscador de filmografía.
 // Se carga con <script defer> después de filmography.js, así que `filterCredits`
 // ya existe. Todo va dentro de una función para no crear variables globales.
 (function () {
   setupCreditSearch();
-  setupVideobook();
 
   // --- Buscador de la filmografía -------------------------------------------
 
@@ -92,45 +91,5 @@
     if (found === 0) return "Sin resultados para «" + query + "».";
     if (found === 1) return "1 resultado.";
     return found + " resultados.";
-  }
-
-  // --- Videobook bajo demanda ------------------------------------------------
-
-  // El vídeo de YouTube no se carga hasta que la persona lo pide.
-  function setupVideobook() {
-    const link = document.getElementById("videobook");
-    if (!link) return;
-
-    const videoId = new URL(link.href).searchParams.get("v");
-    if (!videoId) return;
-
-    link.addEventListener("click", function (event) {
-      // Respeta abrir en otra pestaña con Ctrl, Mayús, Cmd o botón central.
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
-      event.preventDefault();
-
-      const frame = document.createElement("iframe");
-      frame.src =
-        "https://www.youtube-nocookie.com/embed/" + videoId + "?autoplay=1&rel=0";
-      frame.title = "Videobook de doblaje de Lidia Carbonell";
-      frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
-      frame.allowFullscreen = true;
-
-      const box = document.createElement("div");
-      box.className = "video-frame";
-      box.appendChild(frame);
-
-      // Enlace de respaldo por si YouTube no deja incrustar el vídeo
-      // (por ejemplo, al abrir la página con doble clic desde el disco).
-      const fallback = document.createElement("p");
-      fallback.className = "video-fallback";
-      fallback.innerHTML =
-        '¿No se reproduce? <a href="' + link.href +
-        '" target="_blank" rel="noopener noreferrer">Abrir en YouTube' +
-        '<span class="visually-hidden"> (se abre en una pestaña nueva)</span></a>';
-
-      link.replaceWith(box, fallback);
-      frame.focus();
-    });
   }
 })();

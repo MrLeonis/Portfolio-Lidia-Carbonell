@@ -1,0 +1,16 @@
+# Solo se publica la web. Todo lo demás es trabajo interno del proyecto.
+.agents/
+.aider-desk/
+.claude/
+.opencode/
+_archivo-diario/
+guia-curso/
+docs/
+specs/
+tests/
+AGENTS.md
+CLAUDE.md
+MEMORY.md
+opencode.json
+skills-lock.json
+Portfolio_Lidia_Carbonell_Audiovisual_2026.pdf

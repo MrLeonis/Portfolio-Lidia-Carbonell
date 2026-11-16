@@ -1,0 +1,1109 @@
+/* Portfolio de Lidia Carbonell — estilos base. Móvil primero. */
+
+:root {
+  --bg: #fbf6ee;
+  --ink: #1f1a17;
+  --muted: #5b4f47;
+  --accent: #8c1d2f;
+  --on-accent: #ffffff;
+  --line: #e5d9c8;
+  --card: #ffffff;
+
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-heading: Georgia, "Times New Roman", serif;
+  --radius: 4px;
+  --gutter: 1rem;
+  --max-width: 64rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 1rem;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  overflow-wrap: break-word;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  line-height: 1.15;
+  margin: 0 0 0.5em;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 9vw, 4rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid var(--accent);
+  display: inline-block;
+}
+
+p {
+  margin: 0 0 1em;
+  max-width: 65ch;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.2em;
+}
+
+/* Foco visible para quien navega con teclado */
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* Enlace «Saltar al contenido»: solo se ve al recibir el foco */
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: 0;
+  transform: translateY(-120%);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 0.75rem 1rem;
+  border-radius: 0 0 var(--radius) var(--radius);
+  z-index: 10;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* Cabecera y navegación */
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1.5rem;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0.75rem var(--gutter);
+  border-bottom: 1px solid var(--line);
+}
+
+.site-name {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.site-header nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-header nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.625rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.site-header nav a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* Contenido principal */
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 3rem;
+}
+
+main > section {
+  padding-top: 2.5rem;
+}
+
+.hero {
+  padding-top: 2rem;
+}
+
+.eyebrow {
+  margin-bottom: 0.25rem;
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.headline {
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 4.5vw, 1.75rem);
+  line-height: 1.3;
+  margin-bottom: 1rem;
+}
+
+.languages {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* Botones y grupos de acciones */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 1.25rem;
+  background: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--on-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.button:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.button-secondary {
+  background: transparent;
+  color: var(--accent);
+}
+
+.button-secondary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+/* Pantallas más anchas */
+@media (min-width: 40rem) {
+  :root {
+    --gutter: 1.5rem;
+  }
+
+  main > section {
+    padding-top: 3.5rem;
+  }
+
+  .hero {
+    padding-top: 4rem;
+  }
+}
+
+/* Respeta a quien pide menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Texto solo para lectores de pantalla */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+h3 {
+  font-size: 1.25rem;
+  margin-top: 2rem;
+}
+
+h4 {
+  font-family: var(--font-heading);
+  font-size: 1.375rem;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+}
+
+.kicker {
+  margin-bottom: 0.25rem;
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Videobook */
+.video-link {
+  position: relative;
+  display: block;
+  max-width: 48rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.video-link::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4.5rem;
+  height: 4.5rem;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--accent)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M9 6.5v11l9-5.5z'/%3E%3C/svg%3E")
+    center / 60% no-repeat;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.video-link:hover::after {
+  background-color: var(--ink);
+}
+
+/* Escenas de doblaje */
+.clip-list,
+.role-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clip-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.clip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 48px;
+  padding: 0.75rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.clip:hover {
+  border-color: var(--accent);
+}
+
+.clip-time {
+  flex-shrink: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Audiolibro */
+.book {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.book img {
+  width: 7rem;
+  height: auto;
+  border-radius: var(--radius);
+}
+
+.book .actions {
+  margin-top: 1rem;
+}
+
+/* Personajes */
+.role-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.role-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.75rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.role-list strong {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+}
+
+.role-list span {
+  color: var(--muted);
+}
+
+.role-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.95rem;
+}
+
+.role-list-compact li {
+  background: transparent;
+}
+
+.section-links {
+  margin-top: 2rem;
+}
+
+.section-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+@media (min-width: 40rem) {
+  .clip-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .book {
+    grid-template-columns: 9rem 1fr;
+    align-items: start;
+    padding: 1.5rem;
+  }
+
+  .book img {
+    width: 100%;
+  }
+
+  .role-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 60rem) {
+  .role-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Tarjetas de «Traducción y ajuste» */
+.card-grid {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.card img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: center 20%;
+  background: var(--line);
+}
+
+.card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.card-body h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.125rem;
+}
+
+.card-body p {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.card-body .kicker {
+  color: var(--accent);
+}
+
+.card-channel {
+  margin-top: auto;
+  padding-top: 0.25rem;
+}
+
+.card-channel a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+@media (min-width: 40rem) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 60rem) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Filmografía completa */
+.film-group {
+  margin-top: 1rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.film-group summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  min-height: 48px;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.group-count {
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.film-group table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.film-group th,
+.film-group td {
+  padding: 0.625rem 0.5rem;
+  border-top: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.film-group th:first-child,
+.film-group td:first-child {
+  padding-left: 1rem;
+}
+
+.film-group th:last-child,
+.film-group td:last-child {
+  padding-right: 1rem;
+}
+
+.film-group thead th {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.film-group tbody th {
+  font-weight: 600;
+}
+
+.film-group td ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.film-group td li + li {
+  margin-top: 0.125rem;
+}
+
+.film-group small {
+  display: block;
+  color: var(--muted);
+}
+
+.source-link {
+  display: inline-block;
+  margin-top: 0.25rem;
+  color: var(--muted);
+}
+
+.film-group a {
+  padding: 0.25rem 0;
+}
+
+@media (min-width: 40rem) {
+  .film-group table {
+    font-size: 1rem;
+  }
+
+  .film-group th,
+  .film-group td {
+    padding: 0.75rem 0.75rem;
+  }
+
+  .source-link {
+    margin: 0 0 0 0.5rem;
+  }
+}
+
+@media (max-width: 39.99rem) {
+  .film-group thead th {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    font-size: 0.7rem;
+    letter-spacing: 0;
+    overflow-wrap: normal;
+  }
+}
+
+/* Buscador de la filmografía (lo crea app.js) */
+.film-search {
+  margin: 1.5rem 0 0.5rem;
+  max-width: 32rem;
+}
+
+.film-search label {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-weight: 600;
+}
+
+.film-search input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 0.875rem;
+  background: var(--card);
+  border: 2px solid var(--muted);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font: inherit;
+}
+
+.film-search input:focus-visible {
+  outline-offset: 2px;
+}
+
+.film-search p {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* Vídeo de YouTube cargado bajo demanda */
+.video-frame {
+  position: relative;
+  max-width: 48rem;
+  aspect-ratio: 16 / 9;
+  background: var(--ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Producción, experiencia, formación y contacto */
+.skill-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.skill-block {
+  padding: 1rem 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.skill-block h3 {
+  margin-top: 0;
+}
+
+.skill-block > p {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.tick-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tick-list li {
+  position: relative;
+  padding: 0.25rem 0 0.25rem 1.25rem;
+}
+
+.tick-list li::before {
+  content: "";
+  position: absolute;
+  top: 0.85em;
+  left: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline li {
+  padding: 0.75rem 0 0.75rem 1rem;
+  border-left: 3px solid var(--accent);
+}
+
+.timeline p {
+  margin: 0 0 0.25rem;
+}
+
+.timeline-head span {
+  margin-left: 0.5rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.language-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.language-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.375rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.language-list li:last-child {
+  border-bottom: 0;
+}
+
+.language-list span {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.tool-groups {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+}
+
+.tool-groups dt {
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tool-groups dd {
+  margin: 0.25rem 0 0;
+}
+
+.contact-list {
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  padding: 0.625rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.contact-list li > span:first-child {
+  min-width: 6.5rem;
+  color: var(--muted);
+}
+
+.contact-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.site-footer {
+  padding: 1.5rem var(--gutter);
+  background: var(--ink);
+  color: var(--bg);
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.site-footer p {
+  max-width: none;
+  margin: 0;
+}
+
+@media (min-width: 40rem) {
+  .skill-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tool-groups {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 60rem) {
+  .skill-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Elementos que solo existen en la versión impresa (PDF) */
+.print-only {
+  display: none;
+}
+
+/* ===== Versión impresa: genera el PDF para estudios y clientes ===== */
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+@media print {
+  :root {
+    --gutter: 0;
+    --max-width: none;
+  }
+
+  /* Todo va en rem: con esta base, el texto y los márgenes se reducen juntos */
+  html {
+    scroll-behavior: auto;
+    font-size: 9.5pt;
+  }
+
+  body {
+    font-size: 1rem;
+    line-height: 1.4;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Lo interactivo no se imprime */
+  .no-print,
+  .film-search,
+  .film-group,
+  .video-fallback {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block;
+  }
+
+  main {
+    padding: 0;
+  }
+
+  main > section {
+    padding-top: 5mm;
+    break-inside: auto;
+  }
+
+  .hero {
+    padding-top: 0;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    break-after: avoid;
+  }
+
+  h3 {
+    margin-top: 3mm;
+    font-size: 1.15rem;
+    break-after: avoid;
+  }
+
+  p {
+    max-width: none;
+    margin-bottom: 0.5em;
+  }
+
+  .headline {
+    font-size: 1.35rem;
+  }
+
+  .print-contact {
+    margin-top: 3mm;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* Muestras */
+  .video-link {
+    max-width: 75mm;
+  }
+
+  .video-link::after {
+    width: 12mm;
+    height: 12mm;
+  }
+
+  .clip-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2mm;
+  }
+
+  .clip {
+    min-height: 0;
+    padding: 2mm 3mm;
+  }
+
+  .book {
+    grid-template-columns: 22mm 1fr;
+    gap: 4mm;
+    padding: 3mm;
+  }
+
+  .book img {
+    width: 22mm;
+  }
+
+  .book .actions {
+    margin-top: 2mm;
+  }
+
+  .book .button {
+    min-height: 0;
+    padding: 1mm 3mm;
+    font-size: 0.9rem;
+  }
+
+  /* Doblaje */
+  .role-list {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2mm;
+  }
+
+  .role-list li {
+    padding: 2mm 3mm;
+    break-inside: avoid;
+  }
+
+  .role-list a {
+    min-height: 0;
+    font-size: 0.85rem;
+    padding: 0;
+  }
+
+  .role-list strong {
+    font-size: 1.05rem;
+  }
+
+  /* Tarjetas de traducción y ajuste: miniaturas pequeñas */
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2mm;
+    margin-top: 3mm;
+  }
+
+  .card {
+    break-inside: avoid;
+  }
+
+  /* Sin imágenes en el PDF: el archivo pesaría más de 10 MB */
+  .card img {
+    display: none;
+  }
+
+  .card-body {
+    padding: 1.5mm 2mm;
+  }
+
+  .card-body h3 {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .card-body p {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.25;
+  }
+
+  .card-body .kicker {
+    font-size: 0.7rem;
+  }
+
+  .card-channel {
+    display: none;
+  }
+
+  /* Producción, experiencia, formación */
+  .skill-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3mm;
+    margin-top: 3mm;
+  }
+
+  .skill-block {
+    padding: 3mm 4mm;
+    break-inside: avoid;
+  }
+
+  .skill-block h3 {
+    margin-bottom: 1.5mm;
+  }
+
+  .tick-list li {
+    padding: 0.5mm 0 0.5mm 4mm;
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+  .tick-list li::before {
+    width: 1.5mm;
+    height: 1.5mm;
+  }
+
+  .timeline {
+    break-inside: avoid;
+  }
+
+  .timeline li {
+    padding: 1.5mm 0 1.5mm 3mm;
+    break-inside: avoid;
+  }
+
+  h2 + p,
+  h3 + .card-grid,
+  h3 + .role-list {
+    break-before: avoid;
+  }
+
+  .timeline p {
+    margin-bottom: 0.5mm;
+  }
+
+  .tool-groups {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3mm;
+  }
+
+  .contact-list li {
+    padding: 1.5mm 0;
+  }
+
+  .contact-list a {
+    min-height: 0;
+  }
+
+  .site-footer {
+    margin-top: 5mm;
+    padding: 3mm 0 0;
+    background: none;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+  }
+}
+
+@media print {
+  /* Doblaje empieza en página nueva: así no se queda el título solo al final de la primera */
+  #doblaje {
+    break-before: page;
+  }
+}
+
+/* En móvil y pantallas táctiles, los enlaces de la tabla de filmografía miden 44 px */
+@media (pointer: coarse), (max-width: 39.99rem) {
+  .film-group td a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}

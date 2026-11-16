@@ -14,6 +14,9 @@
   --radius: 4px;
   --gutter: 1rem;
   --max-width: 64rem;
+
+  /* Altura de la barra fija (valor inicial; app.js lo ajusta al medido) */
+  --header-h: 4.5rem;
 }
 
 *,
@@ -24,7 +27,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 1rem;
+  scroll-padding-top: var(--header-h);
 }
 
 body {
@@ -88,7 +91,7 @@ a {
   color: var(--bg);
   padding: 0.75rem 1rem;
   border-radius: 0 0 var(--radius) var(--radius);
-  z-index: 10;
+  z-index: 30;
 }
 
 .skip-link:focus {
@@ -96,15 +99,19 @@ a {
 }
 
 /* Cabecera y navegación */
+/* Menú fijo: sigue visible arriba mientras se desplaza la página.
+   Ocupa todo el ancho y su contenido se centra con el mismo ancho que el resto. */
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.25rem 1.5rem;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0.75rem var(--gutter);
+  padding: 0.75rem max(var(--gutter), calc((100% - var(--max-width)) / 2 + var(--gutter)));
+  background: var(--bg);
   border-bottom: 1px solid var(--line);
 }
 
@@ -143,6 +150,100 @@ a {
   text-decoration: underline;
 }
 
+/* Apartado actual: color de acento y línea inferior gruesa (no depende solo del color) */
+.site-header nav a[aria-current="location"] {
+  color: var(--accent);
+  box-shadow: inset 0 -3px 0 var(--accent);
+}
+
+.site-header nav a[aria-current="location"]:hover {
+  text-decoration: none;
+}
+
+/* El foco se dibuja por dentro para que no lo recorte la fila deslizable del móvil */
+.site-header nav a:focus-visible {
+  outline-offset: -3px;
+}
+
+/* Pantallas estrechas (menos de 52 rem, incluido el móvil en horizontal): la barra fija lleva solo
+   los enlaces, en una fila que se desliza hacia los lados. Con el nombre no caben en una fila. */
+@media (max-width: 51.99rem) {
+  :root {
+    --header-h: 3.4rem;
+  }
+
+  .site-header {
+    padding: 0.25rem 0;
+  }
+
+  .site-name {
+    display: none;
+  }
+
+  .site-header nav {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .site-header nav ul {
+    flex-wrap: nowrap;
+    gap: 0;
+    padding: 0 var(--gutter);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .site-header nav li {
+    scroll-snap-align: center;
+  }
+
+  /* Con ratón: se puede arrastrar la fila como un deslizador */
+  .site-header nav ul.is-scrollable {
+    cursor: grab;
+  }
+
+  .site-header nav a {
+    -webkit-user-drag: none;
+  }
+
+  .site-header nav ul.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+    user-select: none;
+  }
+
+  /* Bordes difuminados: indican que hay más enlaces fuera de la vista */
+  .site-header nav[data-scroll="start"] ul {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
+  }
+
+  .site-header nav[data-scroll="middle"] ul {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 2rem, #000 calc(100% - 2rem), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 2rem, #000 calc(100% - 2rem), transparent);
+  }
+
+  .site-header nav[data-scroll="end"] ul {
+    -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 2rem), transparent);
+    mask-image: linear-gradient(to left, #000 calc(100% - 2rem), transparent);
+  }
+
+  .site-header nav ul::-webkit-scrollbar {
+    display: none;
+  }
+
+  .site-header nav li {
+    flex: 0 0 auto;
+  }
+
+  .site-header nav a {
+    white-space: nowrap;
+  }
+}
+
 /* Contenido principal */
 main {
   max-width: var(--max-width);
@@ -150,7 +251,7 @@ main {
   padding: 0 var(--gutter) 3rem;
 }
 
-main > section {
+main>section {
   padding-top: 2.5rem;
 }
 
@@ -223,7 +324,7 @@ main > section {
     --gutter: 1.5rem;
   }
 
-  main > section {
+  main>section {
     padding-top: 3.5rem;
   }
 
@@ -299,9 +400,7 @@ h4 {
   height: 4.5rem;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: var(--accent)
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M9 6.5v11l9-5.5z'/%3E%3C/svg%3E")
-    center / 60% no-repeat;
+  background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M9 6.5v11l9-5.5z'/%3E%3C/svg%3E") center / 60% no-repeat;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
@@ -597,7 +696,7 @@ h4 {
   list-style: none;
 }
 
-.film-group td li + li {
+.film-group td li+li {
   margin-top: 0.125rem;
 }
 
@@ -692,7 +791,7 @@ h4 {
   margin-top: 0;
 }
 
-.skill-block > p {
+.skill-block>p {
   color: var(--muted);
   font-size: 0.95rem;
 }
@@ -796,7 +895,7 @@ h4 {
   border-top: 1px solid var(--line);
 }
 
-.contact-list li > :first-child {
+.contact-list li> :first-child {
   min-width: 6.5rem;
 }
 
@@ -889,7 +988,7 @@ h4 {
     padding: 0;
   }
 
-  main > section {
+  main>section {
     padding-top: 5mm;
     break-inside: auto;
   }
@@ -1071,14 +1170,14 @@ h4 {
     break-inside: avoid;
   }
 
-  h2 + p,
-  h3 + .card-grid,
-  h3 + .role-list {
+  h2+p,
+  h3+.card-grid,
+  h3+.role-list {
     break-before: avoid;
   }
 
   /* El título, su texto y el subtítulo viajan con la primera fila de tarjetas */
-  h2 + p {
+  h2+p {
     break-after: avoid;
   }
 
@@ -1110,8 +1209,55 @@ h4 {
 
 
 /* En móvil y pantallas táctiles, los enlaces de la tabla de filmografía miden 44 px */
-@media (pointer: coarse), (max-width: 39.99rem) {
+@media (pointer: coarse),
+(max-width: 39.99rem) {
   .film-group td a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+
+/* Contacto en escritorio: todo centrado y los datos en una sola fila (no afecta al PDF) */
+@media screen and (min-width: 40rem) {
+  #contacto {
+    text-align: center;
+  }
+
+  #contacto p {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  #contacto .actions {
+    justify-content: center;
+  }
+
+  /* Las cinco palabras en una fila, alineadas arriba; el dato de Correo y Ubicación, debajo */
+  .contact-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.5rem 2.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .contact-list li {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+    border-top: 0;
+  }
+
+  .contact-list li> :first-child {
+    min-width: 0;
+  }
+
+  .contact-label {
     display: inline-flex;
     align-items: center;
     min-height: 44px;

@@ -1,9 +1,10 @@
-// Interfaz del portfolio: buscador de filmografía y vídeo bajo demanda.
+// Interfaz del portfolio: buscador de filmografía, vídeo bajo demanda y menú fijo.
 // Se carga con <script defer> después de filmography.js y video.js, así que sus
 // funciones (`filterCredits`, `getYouTubeVideoId`…) ya existen. Todo va dentro de una función para no crear variables globales.
 (function () {
   setupCreditSearch();
   setupVideobook();
+  setupStickyMenu();
 
   // --- Buscador de la filmografía -------------------------------------------
 
@@ -184,5 +185,154 @@
     hint.textContent = " (se abre en una pestaña nueva)";
     open.appendChild(hint);
     status.appendChild(open);
+  }
+
+  // --- Menú fijo -------------------------------------------------------------
+
+  // La barra queda fija arriba. Para que los títulos no queden tapados al ir a un apartado
+  // (enlaces, teclado y «Saltar al contenido»), el CSS usa la altura de la barra como margen
+  // de ancla (`scroll-padding-top: var(--header-h)`). Aquí se mide esa altura real.
+  function setupStickyMenu() {
+    const header = document.querySelector(".site-header");
+    if (!header) return;
+
+    function updateHeaderHeight() {
+      document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
+    }
+
+    updateHeaderHeight();
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(updateHeaderHeight).observe(header);
+    } else {
+      window.addEventListener("resize", updateHeaderHeight);
+    }
+
+    setupActiveLink(header);
+    setupMenuSlider(header);
+  }
+
+  // Resalta en el menú el apartado que se está leyendo y lo marca como «ubicación actual»
+  // (`aria-current`). La decisión la toma `getActiveNavId` (menu.js); aquí solo se mide la página.
+  function setupActiveLink(header) {
+    const links = Array.from(header.querySelectorAll("nav a[data-nav]"));
+    const list = header.querySelector("nav ul");
+    const sections = Array.from(document.querySelectorAll("main > section[id]"));
+    const prefersLessMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let currentNavId = null;
+    let updatePending = false;
+
+    function updateActiveLink() {
+      updatePending = false;
+      const scrollTop = window.scrollY;
+      const items = sections.map(function (section) {
+        return { navId: section.dataset.nav || null, top: section.getBoundingClientRect().top + scrollTop };
+      });
+      const readingLine = scrollTop + header.offsetHeight + 24;
+      const atBottom = scrollTop + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      const activeId = getActiveNavId(items, readingLine, atBottom);
+      if (activeId === currentNavId) return;
+
+      currentNavId = activeId;
+      links.forEach(function (link) {
+        if (link.dataset.nav === activeId) {
+          link.setAttribute("aria-current", "location");
+          centerLinkInRow(link);
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+    }
+
+    // En pantallas estrechas la fila del menú se desliza: se centra el enlace resaltado
+    // moviendo solo esa fila, sin tocar el desplazamiento de la página.
+    function centerLinkInRow(link) {
+      if (!list || list.scrollWidth <= list.clientWidth) return;
+      const linkBox = link.getBoundingClientRect();
+      const listBox = list.getBoundingClientRect();
+      const offset = linkBox.left - listBox.left - (list.clientWidth - linkBox.width) / 2;
+      list.scrollBy({ left: offset, behavior: prefersLessMotion.matches ? "auto" : "smooth" });
+    }
+
+    function requestUpdate() {
+      if (updatePending) return;
+      updatePending = true;
+      window.requestAnimationFrame(updateActiveLink);
+    }
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    updateActiveLink();
+  }
+
+  // En pantallas estrechas la fila del menú es un deslizador: con el dedo se desliza sola (es el
+  // comportamiento normal del navegador); aquí se añade el arrastre con el ratón y el aviso de
+  // que hay más enlaces (`data-scroll` en el <nav>, que el CSS usa para difuminar los bordes).
+  function setupMenuSlider(header) {
+    const nav = header.querySelector("nav");
+    const list = header.querySelector("nav ul");
+    if (!nav || !list) return;
+
+    function updateEdges() {
+      const maxScroll = list.scrollWidth - list.clientWidth;
+      let state = "none";
+      if (maxScroll > 1) {
+        state = list.scrollLeft <= 1 ? "start" : list.scrollLeft >= maxScroll - 1 ? "end" : "middle";
+      }
+      nav.dataset.scroll = state;
+      list.classList.toggle("is-scrollable", state !== "none");
+    }
+
+    list.addEventListener("scroll", updateEdges, { passive: true });
+    window.addEventListener("resize", updateEdges);
+    updateEdges();
+
+    // Arrastre con el ratón (los gestos táctiles no necesitan nada más)
+    let dragging = false;
+    let moved = false;
+    let startX = 0;
+    let startScroll = 0;
+
+    list.addEventListener("pointerdown", function (event) {
+      if (event.pointerType !== "mouse" || event.button !== 0 || !list.classList.contains("is-scrollable")) return;
+      dragging = true;
+      moved = false;
+      startX = event.clientX;
+      startScroll = list.scrollLeft;
+    });
+
+    window.addEventListener("pointermove", function (event) {
+      if (!dragging) return;
+      const distance = event.clientX - startX;
+      if (!moved && Math.abs(distance) > 5) {
+        moved = true;
+        list.classList.add("is-dragging");
+      }
+      if (moved) list.scrollLeft = startScroll - distance;
+    });
+
+    function stopDragging() {
+      if (!dragging) return;
+      dragging = false;
+      list.classList.remove("is-dragging");
+    }
+    window.addEventListener("pointerup", stopDragging);
+    window.addEventListener("pointercancel", stopDragging);
+
+    // Sin esto, arrastrar sobre un enlace inicia el arrastre nativo del enlace y se cancela el nuestro
+    list.addEventListener("dragstart", function (event) {
+      event.preventDefault();
+    });
+
+    // Tras un arrastre, el clic de soltar no debe abrir el enlace sobre el que termina
+    list.addEventListener(
+      "click",
+      function (event) {
+        if (!moved) return;
+        event.preventDefault();
+        event.stopPropagation();
+        moved = false;
+      },
+      true
+    );
   }
 })();

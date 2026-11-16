@@ -309,41 +309,45 @@ h4 {
   background-color: var(--ink);
 }
 
-/* Escenas de doblaje */
-.clip-list,
+/* Listas de personajes */
 .role-list {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.clip-list {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.clip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  min-height: 48px;
-  padding: 0.75rem 1rem;
-  background: var(--card);
-  border: 1px solid var(--line);
+/* Vídeo incrustado y mensaje de estado (los crea app.js) */
+.video-frame {
+  position: relative;
+  max-width: 48rem;
+  aspect-ratio: 16 / 9;
+  background: var(--ink);
   border-radius: var(--radius);
-  color: var(--ink);
-  text-decoration: none;
+  overflow: hidden;
 }
 
-.clip:hover {
-  border-color: var(--accent);
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
-.clip-time {
-  flex-shrink: 0;
-  color: var(--accent);
-  font-weight: 700;
+.video-status {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.video-status:empty {
+  display: none;
+}
+
+.video-status a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 /* Audiolibro */
@@ -369,37 +373,54 @@ h4 {
 /* Personajes */
 .role-list {
   display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
 }
 
 .role-list li {
   display: flex;
   flex-direction: column;
-  gap: 0.125rem;
-  padding: 0.75rem 1rem;
+  overflow: hidden;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
 }
 
+.role-card img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center 20%;
+  background: var(--line);
+}
+
+.role-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.625rem 0.75rem 0.5rem;
+  overflow-wrap: break-word;
+}
+
 .role-list strong {
   font-family: var(--font-heading);
-  font-size: 1.125rem;
+  font-size: 1.05rem;
+  line-height: 1.2;
 }
 
 .role-list span {
   color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.3;
 }
 
 .role-list a {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  font-size: 0.95rem;
-}
-
-.role-list-compact li {
-  background: transparent;
+  margin-top: auto;
+  font-size: 0.9rem;
 }
 
 .section-links {
@@ -413,10 +434,6 @@ h4 {
 }
 
 @media (min-width: 40rem) {
-  .clip-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .book {
     grid-template-columns: 9rem 1fr;
     align-items: start;
@@ -428,13 +445,13 @@ h4 {
   }
 
   .role-list {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (min-width: 60rem) {
   .role-list {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -773,13 +790,21 @@ h4 {
 .contact-list li {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.25rem 1rem;
   padding: 0.625rem 0;
   border-top: 1px solid var(--line);
 }
 
-.contact-list li > span:first-child {
+.contact-list li > :first-child {
   min-width: 6.5rem;
+}
+
+.contact-list a {
+  font-weight: 600;
+}
+
+.contact-label {
   color: var(--muted);
 }
 
@@ -826,7 +851,7 @@ h4 {
 /* ===== Versión impresa: genera el PDF para estudios y clientes ===== */
 @page {
   size: A4;
-  margin: 12mm;
+  margin: 10mm;
 }
 
 @media print {
@@ -838,7 +863,7 @@ h4 {
   /* Todo va en rem: con esta base, el texto y los márgenes se reducen juntos */
   html {
     scroll-behavior: auto;
-    font-size: 9.5pt;
+    font-size: 9pt;
   }
 
   body {
@@ -851,7 +876,8 @@ h4 {
   /* Lo interactivo no se imprime */
   .no-print,
   .film-search,
-  .film-group {
+  .film-group,
+  .video-status {
     display: none !important;
   }
 
@@ -907,22 +933,12 @@ h4 {
 
   /* Muestras */
   .video-link {
-    max-width: 75mm;
+    max-width: 60mm;
   }
 
   .video-link::after {
     width: 12mm;
     height: 12mm;
-  }
-
-  .clip-list {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2mm;
-  }
-
-  .clip {
-    min-height: 0;
-    padding: 2mm 3mm;
   }
 
   .book {
@@ -945,30 +961,44 @@ h4 {
     font-size: 0.9rem;
   }
 
-  /* Doblaje */
+  /* Doblaje: 6 tarjetas por fila con la imagen cuadrada, para que quepan en el PDF */
   .role-list {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 2mm;
   }
 
   .role-list li {
-    padding: 2mm 3mm;
     break-inside: avoid;
+  }
+
+  .role-card img {
+    aspect-ratio: 1 / 1;
+  }
+
+  .role-card-body {
+    gap: 0;
+    padding: 1.5mm 2mm;
+  }
+
+  .role-list strong {
+    font-size: 0.9rem;
+  }
+
+  .role-list span {
+    font-size: 0.75rem;
+    line-height: 1.2;
   }
 
   .role-list a {
     min-height: 0;
-    font-size: 0.85rem;
-    padding: 0;
-  }
-
-  .role-list strong {
-    font-size: 1.05rem;
+    margin-top: 0.5mm;
+    font-size: 0.7rem;
+    line-height: 1.2;
   }
 
   /* Tarjetas de traducción y ajuste: miniaturas pequeñas */
   .card-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 2mm;
     margin-top: 3mm;
   }
@@ -1047,6 +1077,11 @@ h4 {
     break-before: avoid;
   }
 
+  /* El título, su texto y el subtítulo viajan con la primera fila de tarjetas */
+  h2 + p {
+    break-after: avoid;
+  }
+
   .timeline p {
     margin-bottom: 0.5mm;
   }
@@ -1073,12 +1108,6 @@ h4 {
   }
 }
 
-@media print {
-  /* Doblaje empieza en página nueva: así no se queda el título solo al final de la primera */
-  #doblaje {
-    break-before: page;
-  }
-}
 
 /* En móvil y pantallas táctiles, los enlaces de la tabla de filmografía miden 44 px */
 @media (pointer: coarse), (max-width: 39.99rem) {

@@ -1,8 +1,9 @@
-// Interfaz del portfolio: buscador de filmografía.
-// Se carga con <script defer> después de filmography.js, así que `filterCredits`
-// ya existe. Todo va dentro de una función para no crear variables globales.
+// Interfaz del portfolio: buscador de filmografía y vídeo bajo demanda.
+// Se carga con <script defer> después de filmography.js y video.js, así que sus
+// funciones (`filterCredits`, `getYouTubeVideoId`…) ya existen. Todo va dentro de una función para no crear variables globales.
 (function () {
   setupCreditSearch();
+  setupVideobook();
 
   // --- Buscador de la filmografía -------------------------------------------
 
@@ -91,5 +92,97 @@
     if (found === 0) return "Sin resultados para «" + query + "».";
     if (found === 1) return "1 resultado.";
     return found + " resultados.";
+  }
+
+  // --- Videobook bajo demanda ------------------------------------------------
+
+  // No se pide nada a YouTube hasta que la persona pulsa la miniatura. Entonces se
+  // comprueba si el vídeo admite incrustación: si sí, se reproduce aquí; si no, se
+  // avisa con un enlace, en lugar de enseñar el error de YouTube.
+  function setupVideobook() {
+    const link = document.getElementById("videobook");
+    if (!link || !getYouTubeVideoId(link.href)) return;
+
+    const status = document.createElement("p");
+    status.className = "video-status";
+    status.setAttribute("role", "status");
+    link.after(status);
+
+    let checking = false;
+    let unavailable = false;
+
+    link.addEventListener("click", function (event) {
+      // Con Ctrl, Mayús, Cmd o botón central, o si ya sabemos que no se puede
+      // incrustar, se deja actuar al enlace normal (abre YouTube en otra pestaña).
+      if (unavailable || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+      event.preventDefault();
+      if (checking) return;
+
+      const videoId = getYouTubeVideoId(link.href);
+      checking = true;
+      status.textContent = "Cargando el vídeo…";
+
+      canEmbed(videoId).then(function (embeddable) {
+        checking = false;
+        if (embeddable) {
+          showPlayer(link, status, videoId);
+        } else {
+          unavailable = true;
+          showUnavailable(link, status);
+        }
+      });
+    });
+  }
+
+  // Pregunta a YouTube (oEmbed) si el vídeo se puede incrustar. Responde false si no
+  // se puede, si falla la red o si tarda demasiado.
+  function canEmbed(videoId) {
+    const controller = new AbortController();
+    const timer = setTimeout(function () {
+      controller.abort();
+    }, 8000);
+
+    return fetch(buildOEmbedUrl(videoId), { signal: controller.signal })
+      .then(function (response) {
+        return response.ok;
+      })
+      .catch(function () {
+        return false;
+      })
+      .then(function (result) {
+        clearTimeout(timer);
+        return result;
+      });
+  }
+
+  function showPlayer(link, status, videoId) {
+    const frame = document.createElement("iframe");
+    frame.src = buildEmbedUrl(videoId);
+    frame.title = "Videobook de doblaje de Lidia Carbonell";
+    frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+    frame.allowFullscreen = true;
+    frame.referrerPolicy = "strict-origin-when-cross-origin";
+
+    const box = document.createElement("div");
+    box.className = "video-frame";
+    box.appendChild(frame);
+
+    link.replaceWith(box);
+    status.textContent = "";
+    frame.focus();
+  }
+
+  function showUnavailable(link, status) {
+    status.textContent = "Este vídeo no se puede reproducir aquí. ";
+    const open = document.createElement("a");
+    open.href = link.href;
+    open.target = "_blank";
+    open.rel = "noopener noreferrer";
+    open.textContent = "Abrir en YouTube";
+    const hint = document.createElement("span");
+    hint.className = "visually-hidden";
+    hint.textContent = " (se abre en una pestaña nueva)";
+    open.appendChild(hint);
+    status.appendChild(open);
   }
 })();
